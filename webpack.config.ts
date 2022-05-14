@@ -1,17 +1,19 @@
 import {Configuration} from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
+import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
 
 const config: Configuration = {
   mode: "development",
-  entry: './src/entry.ts',
+  entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.tsx', '.js']
   },
+  externals: ['module', 'named-references'],
   module: {
     rules: [{
       test: /\.css$/,
@@ -20,20 +22,30 @@ const config: Configuration = {
         {loader: 'css-loader'}
       ]
     }, {
-      test: /\.ts$/,
-      loader: 'babel-loader', options: {
+      test: /\.[jt]sx?$/,
+      loader: 'babel-loader',
+      options: {
         presets: [
-          '@babel/preset-env',
+          ["@babel/preset-react", {"runtime": "automatic"}],
+          "@emotion/babel-preset-css-prop",
           '@babel/preset-typescript'
-        ]
+        ],
+        plugins: ["babel-plugin-twin", "babel-plugin-macros"],
       },
       exclude: /node_modules/
     }]
   },
+  optimization: {
+    minimizer: [
+      new (require('terser-webpack-plugin'))({ extractComments: false }),
+    ],
+  },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/index.html'
-    }) as any
+    new HtmlWebpackPlugin(),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: './bundleContentReport.html'
+    })
   ]
 }
 

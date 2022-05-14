@@ -1,11 +1,11 @@
-TypeScript Webpack Babel Only with "preset-typescript" Demo
+TypeScript React Twin Macro Demo
 =================================================
 
-使用`@babel/preset-typescript`直接处理typescript，不使用ts-loader
+使用 "twin-macro" 可以把 emotioncss/tailwind 结合在一起使用。
 
-此时babel只转换代码，而不做类型检查，速度可能会提高。同时需要加上别的命令如`tsc --noEmit`做类型检查
+注意：底层需要babel
 
 ```
 npm install
-npm run demo
+npm start
 ```
